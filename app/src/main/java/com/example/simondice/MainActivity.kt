@@ -1,11 +1,15 @@
 package com.example.simondice
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
+
+
 import android.widget.TextView
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -13,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private var ronda: Int = 0
     private var record: Int = 0
-    private var cadenaColores = IntArray(1000)
+    var cadenaColores: ArrayList<Int> = ArrayList()
     private var counter = 0
     var colorIntroducido: Int = 0
 
@@ -25,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var btStart: Button
     lateinit var tvRonda: TextView
     lateinit var tvRecord: TextView
-    lateinit var ivColor: ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         btStart = findViewById(R.id.btStart)
         tvRonda = findViewById(R.id.tvRonda)
         tvRecord = findViewById(R.id.tvRecord)
-        ivColor = findViewById(R.id.ivColor)
+
 
         btStart.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
@@ -53,8 +57,9 @@ class MainActivity : AppCompatActivity() {
 
     fun startRound() {
 
+        Log.d("Starting Round", "Empieza la ronda")
+
         randomColor()
-        enterColor()
 
     }
 
@@ -62,13 +67,41 @@ class MainActivity : AppCompatActivity() {
 
         cadenaColores += (1..4).random()
 
+        Log.d("Color seleccionado", cadenaColores.last().toString())
+
+        showColor()
+
     }
 
-    fun showColor(){
+    fun showColor() {
 
+        for (color: Int in cadenaColores) {
 
+            Log.d("Color mostrado", cadenaColores.last().toString())
 
+            if (color == 0) break
+            else if (color == 1) {
+                btAmarillo.setBackgroundColor(Color.parseColor("FFFB00"))
+                Thread.sleep(2000)
+                btAmarillo.setBackgroundColor(Color.parseColor("BEBB00"))
+            } else if (color == 2) {
+                btAzul.setBackgroundColor(Color.parseColor("#00F3FF"))
+                Thread.sleep(2000)
+                btAzul.setBackgroundColor(Color.parseColor("#009FA7"))
+            } else if (color == 3) {
+                btRojo.setBackgroundColor(Color.parseColor("#FF0000"))
+                Thread.sleep(2000)
+                btRojo.setBackgroundColor(Color.parseColor("#970000"))
+            } else if (color == 4) {
+                btVerde.setBackgroundColor(Color.parseColor("#2EFF00"))
+                Thread.sleep(2000)
+                btVerde.setBackgroundColor(Color.parseColor("#1B9700"))
+            }
+            //TODO Variar la velocidad con las rondas
 
+        }
+
+        enterColor()
 
     }
 
@@ -106,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
     fun checkColor() {
 
-        if (colorIntroducido == cadenaColores[counter]) {
+        if (colorIntroducido.equals(cadenaColores[counter])) {
 
             if (counter != ronda) {
 
@@ -124,6 +157,10 @@ class MainActivity : AppCompatActivity() {
             //todo Almacenar el record y mostrarlo de verdad
             record = ronda
 
+            Log.d("Stadasdasdadd", "asdasdasdasds")
+
+
+
             restart()
 
         }
@@ -135,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
         ronda = 0
 
-        cadenaColores = IntArray(1000)
+        cadenaColores.clear()
 
         btStart.isClickable = true
 
