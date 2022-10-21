@@ -9,10 +9,13 @@ import android.widget.Button
 
 
 import android.widget.TextView
+import android.widget.Toast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private var ronda: Int = 0
@@ -35,9 +38,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         btAmarillo = findViewById(R.id.btAmarillo)
+        btAmarillo.setOnClickListener(this)
         btAzul = findViewById(R.id.btAzul)
+        btAzul.setOnClickListener(this)
         btRojo = findViewById(R.id.btRojo)
+        btRojo.setOnClickListener(this)
         btVerde = findViewById(R.id.btVerde)
+        btVerde.setOnClickListener(this)
         btStart = findViewById(R.id.btStart)
         tvRonda = findViewById(R.id.tvRonda)
         tvRecord = findViewById(R.id.tvRecord)
@@ -71,9 +78,11 @@ class MainActivity : AppCompatActivity() {
 
         showColor()
 
-    }
 
-    fun showColor() {
+    }
+    //TODO Mostrar colores por pantalla
+    //TODO Sacar Toast por pantalla
+    fun showColor() = runBlocking {
 
         for (color: Int in cadenaColores) {
 
@@ -81,59 +90,54 @@ class MainActivity : AppCompatActivity() {
 
             if (color == 0) break
             else if (color == 1) {
-                btAmarillo.setBackgroundColor(Color.parseColor("FFFB00"))
-                Thread.sleep(2000)
-                btAmarillo.setBackgroundColor(Color.parseColor("BEBB00"))
+
+                launch {
+                    btAmarillo.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(2000)
+                    btAmarillo.setBackgroundColor(Color.parseColor("#BEBB00"))
+                }
+
             } else if (color == 2) {
-                btAzul.setBackgroundColor(Color.parseColor("#00F3FF"))
-                Thread.sleep(2000)
-                btAzul.setBackgroundColor(Color.parseColor("#009FA7"))
+
+                launch {
+                    btAzul.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(2000)
+                    btAzul.setBackgroundColor(Color.parseColor("#009FA7"))
+                }
             } else if (color == 3) {
-                btRojo.setBackgroundColor(Color.parseColor("#FF0000"))
-                Thread.sleep(2000)
-                btRojo.setBackgroundColor(Color.parseColor("#970000"))
+
+                launch {
+                    btRojo.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(2000)
+                    btRojo.setBackgroundColor(Color.parseColor("#970000"))
+                }
             } else if (color == 4) {
-                btVerde.setBackgroundColor(Color.parseColor("#2EFF00"))
-                Thread.sleep(2000)
-                btVerde.setBackgroundColor(Color.parseColor("#1B9700"))
+
+                launch {
+                    btVerde.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(2000)
+                    btVerde.setBackgroundColor(Color.parseColor("#1B9700"))
+                }
             }
             //TODO Variar la velocidad con las rondas
 
         }
 
-        enterColor()
+
+        activateButton(true)
+
+        Toast.makeText(this@MainActivity, "Repite la secuencia!", Toast.LENGTH_SHORT).show()
+
 
     }
 
 
-    fun enterColor() {
+    fun activateButton(boolean: Boolean) {
 
-        btAmarillo.setOnClickListener() {
-
-            colorIntroducido = 1
-            checkColor()
-
-        }
-        btAzul.setOnClickListener() {
-
-            colorIntroducido = 2
-            checkColor()
-
-        }
-
-        btRojo.setOnClickListener() {
-
-            colorIntroducido = 3
-            checkColor()
-
-        }
-
-        btVerde.setOnClickListener() {
-
-            colorIntroducido = 4
-            checkColor()
-
-        }
+        btVerde.isClickable = boolean
+        btRojo.isClickable = boolean
+        btAzul.isClickable = boolean
+        btAmarillo.isClickable = boolean
 
     }
 
@@ -149,18 +153,17 @@ class MainActivity : AppCompatActivity() {
 
                 ronda++
                 counter = 0
+                tvRonda.setText("Ronda: " + ronda)
+
                 startRound()
 
             }
 
         } else {
             //todo Almacenar el record y mostrarlo de verdad
-            record = ronda
 
-            Log.d("Stadasdasdadd", "asdasdasdasds")
-
-
-
+            Toast.makeText(this@MainActivity, "Has perdido!", Toast.LENGTH_SHORT).show()
+            
             restart()
 
         }
@@ -170,11 +173,67 @@ class MainActivity : AppCompatActivity() {
 
     fun restart() {
 
+        activateButton(false)
+
+        record = ronda
+
+        tvRecord.setText("Record: " + record)
+        
         ronda = 0
+
+        tvRonda.setText("Ronda: " + ronda)
 
         cadenaColores.clear()
 
         btStart.isClickable = true
+
+    }
+
+    override fun onClick(view: View?) {
+        when (view?.id) {
+
+            btAmarillo.id -> {
+
+                colorIntroducido = 1
+
+                checkColor()
+
+            }
+            btAzul.id -> {
+
+                colorIntroducido = 2
+
+                checkColor()
+
+            }
+
+            btRojo.id -> {
+
+                colorIntroducido = 3
+
+                checkColor()
+
+            }
+
+            btVerde.id -> {
+
+                colorIntroducido = 4
+
+                checkColor()
+
+            }
+
+            btStart.id -> {
+
+                btStart.isClickable = false
+                startRound()
+
+            }
+
+
+
+        }
+
 
     }
 
