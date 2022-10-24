@@ -10,9 +10,7 @@ import android.widget.Button
 
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -80,54 +78,59 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 
     }
-    //TODO Mostrar colores por pantalla
-    //TODO Sacar Toast por pantalla
-    fun showColor() = runBlocking {
 
-        for (color: Int in cadenaColores) {
+    fun showColor() {
 
-            Log.d("Color mostrado", cadenaColores.last().toString())
+        activateButton(false)
 
-            if (color == 0) break
-            else if (color == 1) {
+        var jobMuestraColor: Job? = null
 
-                launch {
-                    btAmarillo.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                    delay(2000)
-                    btAmarillo.setBackgroundColor(Color.parseColor("#BEBB00"))
-                }
+        jobMuestraColor = GlobalScope.launch(Dispatchers.Main) {
 
-            } else if (color == 2) {
-
-                launch {
-                    btAzul.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                    delay(2000)
-                    btAzul.setBackgroundColor(Color.parseColor("#009FA7"))
-                }
-            } else if (color == 3) {
-
-                launch {
-                    btRojo.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                    delay(2000)
-                    btRojo.setBackgroundColor(Color.parseColor("#970000"))
-                }
-            } else if (color == 4) {
-
-                launch {
-                    btVerde.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                    delay(2000)
-                    btVerde.setBackgroundColor(Color.parseColor("#1B9700"))
-                }
-            }
             //TODO Variar la velocidad con las rondas
 
+            for (color: Int in cadenaColores) {
+
+                delay(500)
+
+
+                Log.d("Color mostrado", cadenaColores.last().toString())
+
+                if (color == 1) {
+
+                    btAmarillo.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(1000)
+                    btAmarillo.setBackgroundColor(Color.parseColor("#BEBB00"))
+
+                } else if (color == 2) {
+
+
+                    btAzul.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(1000)
+                    btAzul.setBackgroundColor(Color.parseColor("#009FA7"))
+
+                } else if (color == 3) {
+
+
+                    btRojo.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(1000)
+                    btRojo.setBackgroundColor(Color.parseColor("#970000"))
+
+                } else if (color == 4) {
+
+                    btVerde.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    delay(1000)
+                    btVerde.setBackgroundColor(Color.parseColor("#1B9700"))
+
+                }
+
+            }
+
+            activateButton(true)
+            Toast.makeText(this@MainActivity, "Repite la secuencia!", Toast.LENGTH_SHORT).show()
         }
 
-
-        activateButton(true)
-
-        Toast.makeText(this@MainActivity, "Repite la secuencia!", Toast.LENGTH_SHORT).show()
-
+        jobMuestraColor
 
     }
 
@@ -163,7 +166,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             //todo Almacenar el record y mostrarlo de verdad
 
             Toast.makeText(this@MainActivity, "Has perdido!", Toast.LENGTH_SHORT).show()
-            
+
             restart()
 
         }
@@ -178,7 +181,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         record = ronda
 
         tvRecord.setText("Record: " + record)
-        
+
         ronda = 0
 
         tvRonda.setText("Ronda: " + ronda)
@@ -229,7 +232,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 startRound()
 
             }
-
 
 
         }
