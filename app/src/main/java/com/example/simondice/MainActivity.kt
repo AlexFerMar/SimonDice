@@ -11,6 +11,9 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.*
+import kotlin.random.Random
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     fun randomColor() {
 
-        cadenaColores += (1..4).random()
+        cadenaColores += Random(System.currentTimeMillis()).nextInt(1,5)
 
         Log.d("Color seleccionado", cadenaColores.last().toString())
 
