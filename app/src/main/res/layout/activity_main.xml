@@ -28,7 +28,8 @@
         android:layout_marginBottom="80dp"
         android:backgroundTint="#1B9700"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/btAzul"
@@ -40,7 +41,8 @@
         app:layout_constraintBottom_toTopOf="@+id/btVerde"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRecord"
-        app:layout_constraintVertical_bias="0.763" />
+        app:layout_constraintVertical_bias="0.763"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/btRojo"
@@ -51,7 +53,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btVerde"
         app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/btAmarillo"
@@ -64,7 +67,8 @@
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btStart"
-        app:layout_constraintVertical_bias="0.551" />
+        app:layout_constraintVertical_bias="0.551"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/btStart"

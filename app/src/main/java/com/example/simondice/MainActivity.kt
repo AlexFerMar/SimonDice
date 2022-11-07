@@ -1,19 +1,18 @@
 package com.example.simondice
 
+
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-
-
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import kotlin.random.Random
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom
+import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var cadenaColores: ArrayList<Int> = ArrayList()
     private var counter = 0
     var colorIntroducido: Int = 0
-
 
     lateinit var btAmarillo: Button
     lateinit var btAzul: Button
@@ -38,6 +36,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        loadRecord()
+
         btAmarillo = findViewById(R.id.btAmarillo)
         btAmarillo.setOnClickListener(this)
         btAzul = findViewById(R.id.btAzul)
@@ -50,13 +51,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         tvRonda = findViewById(R.id.tvRonda)
         tvRecord = findViewById(R.id.tvRecord)
 
+        tvRecord.setText("Record: " + record)
+
+
+
+
 
         btStart.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
 
                 btStart.isClickable = false
                 startRound()
-
 
             }
         })
@@ -65,20 +70,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     fun startRound() {
 
-        Log.d("Starting Round", "Empieza la ronda")
-
         randomColor()
 
     }
 
     fun randomColor() {
 
-        cadenaColores += Random(System.currentTimeMillis()).nextInt(1,5)
-
-        Log.d("Color seleccionado", cadenaColores.last().toString())
+        cadenaColores += Random(System.currentTimeMillis()).nextInt(1, 5)
 
         showColor()
-
 
     }
 
@@ -95,9 +95,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             for (color: Int in cadenaColores) {
 
                 delay(500)
-
-
-                Log.d("Color mostrado", cadenaColores.last().toString())
 
                 if (color == 1) {
 
@@ -166,9 +163,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         } else {
-            //todo Almacenar el record y mostrarlo de verdad
 
             Toast.makeText(this@MainActivity, "Has perdido!", Toast.LENGTH_SHORT).show()
+
+            if (ronda > record) {
+
+                saveRecord(ronda)
+
+                Toast.makeText(this@MainActivity, "Nuevo Record!", Toast.LENGTH_SHORT).show()
+
+            }
+
+
 
             restart()
 
@@ -177,11 +183,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    fun saveRecord(record: Int) {
+        var pref: SharedPreferences = getSharedPreferences("record", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.putInt("record", record)
+        editor.commit()
+    }
+
+    private fun loadRecord(){
+        val pref: SharedPreferences = getSharedPreferences("record", Context.MODE_PRIVATE)
+        val savedRecord = pref.getInt("record",0)
+        record= savedRecord
+    }
+
+
     fun restart() {
 
-        activateButton(false)
+        loadRecord()
 
-        record = ronda
+        activateButton(false)
 
         tvRecord.setText("Record: " + record)
 
