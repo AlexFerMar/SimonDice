@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Declaracion de los botones junto con el "set" de sus OnClickListener
         btAmarillo = findViewById(R.id.btAmarillo)
         btAmarillo.setOnClickListener(this)
 
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         }
 
-
+        //Observacion del cambio de Ronda
         miVistaModelo.liveRonda.observe(
             this,
             Observer(
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             )
         )
-
+        //Observacion del cambio de record
         miVistaModelo.liveRecord.observe(
             this,
             Observer(
@@ -77,7 +78,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             )
         )
-
+        /*Observacion del parpadeo de llos botones de colores. Segun el "blink" que cambie, se cambiara
+        el color del boton a uno mas claro u oscuro, consiguiendo el efecto de parpadeo
+         */
         miVistaModelo.yellowBlink.observe(
             this,
             Observer(
@@ -127,6 +130,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             )
         )
 
+        //Observacion "activateButton" que dictamina cuando los botones de colores estan activos
         miVistaModelo.activateButton.observe(
             this,
             Observer(
@@ -145,7 +149,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-
+    //OnClickListener de los botones de colores del simon dice
     override fun onClick(view: View?) {
         when (view?.id) {
 
