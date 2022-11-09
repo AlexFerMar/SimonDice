@@ -1,5 +1,6 @@
 package com.example.simondice.view
 
+
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -8,32 +9,23 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.simondice.R
 
-// para observar LiveDatas
-import androidx.activity.viewModels
+
 import androidx.lifecycle.Observer
 import com.example.simondice.viewModel.MyViewModel
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private var ronda: Int = 0
-    private var record: Int = 0
 
-    val miVistaModelo by viewModels<MyViewModel>()
-
-    lateinit var btAmarillo: Button
-    lateinit var btAzul: Button
-    lateinit var btRojo: Button
-    lateinit var btVerde: Button
-    lateinit var btStart: Button
-    lateinit var tvRonda: TextView
-    lateinit var tvRecord: TextView
-
+    private lateinit var btAmarillo: Button
+    private lateinit var btAzul: Button
+    private lateinit var btRojo: Button
+    private lateinit var btVerde: Button
+    private lateinit var btStart: Button
+    private lateinit var miVistaModelo: MyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        miVistaModelo.loadRecord()
 
         btAmarillo = findViewById(R.id.btAmarillo)
         btAmarillo.setOnClickListener(this)
@@ -47,19 +39,45 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btVerde = findViewById(R.id.btVerde)
         btVerde.setOnClickListener(this)
 
+
+        miVistaModelo = MyViewModel(btAmarillo, btAzul, btRojo, btVerde, this@MainActivity)
+
         btStart = findViewById(R.id.btStart)
-        btStart.setOnClickListener(this)
-
-        tvRonda = findViewById(R.id.tvRonda)
-        tvRecord = findViewById(R.id.tvRecord)
 
 
-        tvRonda.setText("Ronda: " + ronda)
+        btStart.setOnClickListener {
 
-        tvRecord.setText("Record: " + record)
+            btStart.isClickable = false
+            miVistaModelo.startGame()
+
+        }
+
+        miVistaModelo.liveRonda.observe(
+            this,
+            Observer(
+                fun(ronda: Int) {
+                    var tvRonda: TextView = findViewById(R.id.tvRonda)
+                    if (ronda == 0) btStart.isClickable = true
+
+                    tvRonda.setText("Ronda: " + ronda)
+
+                }
+            )
+        )
+
+        miVistaModelo.liveRecord.observe(
+            this,
+            Observer(
+                fun(record: Int) {
+                    var tvRecord: TextView = findViewById(R.id.tvRecord)
+
+                    tvRecord.setText("Record: " + record)
+
+                }
+            )
+        )
 
     }
-
 
 
     override fun onClick(view: View?) {
@@ -87,12 +105,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                 miVistaModelo.checkColor(4)
 
-            }
-
-            btStart.id -> {
-
-                btStart.isClickable = false
-                miVistaModelo.startGame(btAmarillo,btAzul,btRojo,btVerde,this@MainActivity)
             }
 
 

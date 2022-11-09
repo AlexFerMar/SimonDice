@@ -5,42 +5,56 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.widget.Button
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import java.util.ArrayList
 import kotlin.random.Random
 
-class MyViewModel : ViewModel() {
+class MyViewModel constructor(
+    btAmarillo: Button,
+    btAzul: Button,
+    btRojo: Button,
+    btVerde: Button,
+    context: Context
+) : ViewModel() {
+
+    private val btAmarillo: Button = btAmarillo
+    private val btAzul: Button = btAzul
+    private val btRojo: Button = btRojo
+    private val btVerde: Button = btVerde
+    private val context: Context = context
 
     private var ronda: Int = 0
     private var record: Int = loadRecord()
-    val delay : Long=500
-    var cadenaColores: ArrayList<Int> = ArrayList()
+
+
+    var liveRonda = MutableLiveData<Int>()
+    var liveRecord = MutableLiveData<Int>()
+
+    init {
+
+        liveRonda.value = ronda
+        liveRecord.value = record
+
+    }
+
+    private val delay: Long = 500
+    private var cadenaColores: ArrayList<Int> = ArrayList()
     private var counter = 0
 
 
-    lateinit var btAmarillo: Button
-    lateinit var btAzul: Button
-    lateinit var btRojo: Button
-    lateinit var btVerde: Button
-    lateinit var context:Context
-
-
-    fun startGame(btAmarillo: Button,btAzul: Button,btRojo: Button,btVerde: Button,context: Context){
-
-        this.btAmarillo=btAmarillo
-        this.btAzul=btAzul
-        this.btRojo=btRojo
-        this.btVerde=btVerde
-        this.context=context
+    fun startGame() {
 
         startRound()
     }
 
 
-
     fun startRound() {
+
+        liveRonda.setValue(ronda)
+
 
         randomColor()
 
@@ -52,7 +66,6 @@ class MyViewModel : ViewModel() {
     fun randomColor() {
 
         cadenaColores += Random(System.currentTimeMillis()).nextInt(1, 5)
-
 
 
     }
@@ -95,9 +108,11 @@ class MyViewModel : ViewModel() {
 
     }
 
-    fun  restartData() {
+    fun restartData() {
 
         ronda = 0
+
+        liveRecord.setValue(record)
 
         cadenaColores.clear()
 
@@ -169,16 +184,14 @@ class MyViewModel : ViewModel() {
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putInt("record", record)
         editor.commit()
-        this.record=loadRecord()
+        this.record = loadRecord()
     }
 
     fun loadRecord(): Int {
         val pref: SharedPreferences = context.getSharedPreferences("record", Context.MODE_PRIVATE)
-        val savedRecord = pref.getInt("record",0)
-         return savedRecord
+        val savedRecord = pref.getInt("record", 0)
+        return savedRecord
     }
-
-
 
 
 }
