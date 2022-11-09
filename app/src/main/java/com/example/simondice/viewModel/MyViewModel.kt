@@ -1,46 +1,66 @@
 package com.example.simondice.viewModel
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.widget.Button
 import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import java.util.ArrayList
 import kotlin.random.Random
 
-class MyViewModel : ViewModel() {
+class MyViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val context: Context = getApplication<Application>().applicationContext
 
     private var ronda: Int = 0
     private var record: Int = loadRecord()
-    val delay : Long=500
-    var cadenaColores: ArrayList<Int> = ArrayList()
+
+
+    var liveRonda = MutableLiveData<Int>()
+    var liveRecord = MutableLiveData<Int>()
+
+    init {
+
+        liveRonda.value = ronda
+        liveRecord.value = record
+
+    }
+
+    var yellowBlink = MutableLiveData<Boolean>()
+    var blueBlink = MutableLiveData<Boolean>()
+    var redBlink = MutableLiveData<Boolean>()
+    var greenBlink = MutableLiveData<Boolean>()
+
+    var activateButton = MutableLiveData<Boolean>()
+
+    init {
+
+        yellowBlink.value = false
+        blueBlink.value = false
+        redBlink.value = false
+        greenBlink.value = false
+        activateButton.value = false
+
+    }
+
+    private val delay: Long = 500
+    private var cadenaColores: ArrayList<Int> = ArrayList()
     private var counter = 0
 
 
-    lateinit var btAmarillo: Button
-    lateinit var btAzul: Button
-    lateinit var btRojo: Button
-    lateinit var btVerde: Button
-    lateinit var context:Context
-
-
-    fun startGame(btAmarillo: Button,btAzul: Button,btRojo: Button,btVerde: Button,context: Context){
-
-        this.btAmarillo=btAmarillo
-        this.btAzul=btAzul
-        this.btRojo=btRojo
-        this.btVerde=btVerde
-        this.context=context
+    fun startGame() {
 
         startRound()
+
     }
 
 
-
     fun startRound() {
+
+        liveRonda.setValue(ronda)
 
         randomColor()
 
@@ -52,7 +72,6 @@ class MyViewModel : ViewModel() {
     fun randomColor() {
 
         cadenaColores += Random(System.currentTimeMillis()).nextInt(1, 5)
-
 
 
     }
@@ -88,24 +107,27 @@ class MyViewModel : ViewModel() {
 
 
 
-            restartData()
+            restartGame()
 
         }
 
 
     }
 
-    fun  restartData() {
+    fun restartGame() {
 
         ronda = 0
 
+        liveRecord.setValue(record)
+
         cadenaColores.clear()
+
 
     }
 
     fun showColor() {
 
-        activateButton(false)
+        activateButton.setValue(false)
 
         var jobMuestraColor: Job? = null
 
@@ -118,48 +140,39 @@ class MyViewModel : ViewModel() {
 
                 if (color == 1) {
 
-                    btAmarillo.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    yellowBlink.setValue(true)
                     delay(delay)
-                    btAmarillo.setBackgroundColor(Color.parseColor("#BEBB00"))
+                    yellowBlink.setValue(false)
 
                 } else if (color == 2) {
 
-
-                    btAzul.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    blueBlink.setValue(true)
                     delay(delay)
-                    btAzul.setBackgroundColor(Color.parseColor("#009FA7"))
+                    blueBlink.setValue(false)
+
 
                 } else if (color == 3) {
 
-
-                    btRojo.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    redBlink.setValue(true)
                     delay(delay)
-                    btRojo.setBackgroundColor(Color.parseColor("#970000"))
+                    redBlink.setValue(false)
+
 
                 } else if (color == 4) {
 
-                    btVerde.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                    greenBlink.setValue(true)
                     delay(delay)
-                    btVerde.setBackgroundColor(Color.parseColor("#1B9700"))
+                    greenBlink.setValue(false)
 
                 }
 
             }
 
-            activateButton(true)
+            activateButton.setValue(true)
             Toast.makeText(context, "Repite la secuencia!", Toast.LENGTH_SHORT).show()
         }
 
         jobMuestraColor
-
-    }
-
-    fun activateButton(boolean: Boolean) {
-
-        btVerde.isClickable = boolean
-        btRojo.isClickable = boolean
-        btAzul.isClickable = boolean
-        btAmarillo.isClickable = boolean
 
     }
 
@@ -169,16 +182,14 @@ class MyViewModel : ViewModel() {
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putInt("record", record)
         editor.commit()
-        this.record=loadRecord()
+        this.record = loadRecord()
     }
 
     fun loadRecord(): Int {
         val pref: SharedPreferences = context.getSharedPreferences("record", Context.MODE_PRIVATE)
-        val savedRecord = pref.getInt("record",0)
-         return savedRecord
+        val savedRecord = pref.getInt("record", 0)
+        return savedRecord
     }
-
-
 
 
 }
