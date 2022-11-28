@@ -2,10 +2,11 @@ package com.example.simondice.viewModel
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.simondice.model.AppDatabase
+
 
 import kotlinx.coroutines.*
 import java.util.ArrayList
@@ -16,8 +17,14 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     //Contexto de la aplicacion, que nos permite crear toast y guardar el record en las SharedPreferences
     private val context: Context = getApplication<Application>().applicationContext
 
+    //Creamos una instancia de la base de datos
+    val daoRecord = AppDatabase.getDatabase(context).DAORecord()
+
     //Ronda de la partida
     private var ronda: Int = 0
+
+    //Nombre del jugador
+    private lateinit var name: String
 
     //Record de rondas
     private var record: Int = loadRecord()
@@ -60,6 +67,16 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
     //Contador interno para comprobar si es correcta la secuencia
     private var counter = 0
+
+
+    //Funcion que recoje el valor del nombre del jugador
+    fun getName(name:String){
+
+        this.name=name
+
+
+    }
+
 
     /**
      * Funcion para iniciar el juego
@@ -156,7 +173,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
         ronda = 0
 
-        liveRecord.setValue(record)
+        liveRecord.setValue(loadRecord())
 
         cadenaColores.clear()
 
@@ -222,6 +239,41 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+
+    /**
+     * Funcion que guarada en la base de datos local el record y el apodo de quien lo saco
+     *
+     * record: Int -> El número que se guarda comno record
+     */
+    fun saveRecord(record: Int) {
+
+        daoRecord.insertRecord(name,record)
+
+    }
+
+    /**
+     * Funcion que lee el record guardado
+     *
+     * return savedRecord: Int -> El entero almacenado como record en ese momento
+     */
+    fun loadRecord(): Int {
+
+        var recor=daoRecord.getMaxRecord()
+
+        if (recor==null) recor=0
+
+        return recor
+
+    }
+
+
+
+
+
+
+    /*
+
+
     /**
      * Funcion que guarada un entero en SharedPreferences como el nuevo record
      *
@@ -246,5 +298,8 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         return savedRecord
     }
 
+
+
+    */
 
 }
