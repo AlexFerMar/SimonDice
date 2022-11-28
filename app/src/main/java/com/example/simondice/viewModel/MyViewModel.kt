@@ -70,9 +70,9 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
 
     //Funcion que recoje el valor del nombre del jugador
-    fun getName(name:String){
+    fun getName(name: String) {
 
-        this.name=name
+        this.name = name
 
 
     }
@@ -247,7 +247,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun saveRecord(record: Int) {
 
-        daoRecord.insertRecord(name,record)
+        daoRecord.insertRecord(name, record)
 
     }
 
@@ -258,48 +258,12 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun loadRecord(): Int {
 
-        var recor=daoRecord.getMaxRecord()
+        var recor = daoRecord.getMaxRecord()
 
-        if (recor==null) recor=0
+        if (recor == null) recor = 0
 
         return recor
 
     }
-
-
-
-
-
-
-    /*
-
-
-    /**
-     * Funcion que guarada un entero en SharedPreferences como el nuevo record
-     *
-     * record: Int -> El número que se guarda comno record
-     */
-    fun saveRecord(record: Int) {
-        var pref: SharedPreferences = context.getSharedPreferences("record", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = pref.edit()
-        editor.putInt("record", record)
-        editor.commit()
-        this.record = loadRecord()
-    }
-
-    /**
-     * Funcion que lee el record guardado en SharedPreferences
-     *
-     * return savedRecord: Int -> El entero almacenado como record en ese momento
-     */
-    fun loadRecord(): Int {
-        val pref: SharedPreferences = context.getSharedPreferences("record", Context.MODE_PRIVATE)
-        val savedRecord = pref.getInt("record", 0)
-        return savedRecord
-    }
-
-
-
-    */
 
 }
