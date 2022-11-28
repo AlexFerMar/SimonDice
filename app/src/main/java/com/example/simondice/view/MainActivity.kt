@@ -1,12 +1,16 @@
 package com.example.simondice.view
 
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
+
 
 import androidx.appcompat.app.AppCompatActivity
 import com.example.simondice.R
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var btVerde: Button
     private lateinit var btStart: Button
     val miVistaModelo by viewModels<MyViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +49,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         btStart = findViewById(R.id.btStart)
 
+        introduceNombre()
 
         btStart.setOnClickListener {
 
@@ -148,6 +154,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 
     }
+
+
+
+    @SuppressLint("MissingInflatedId")
+    fun introduceNombre() {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        builder.setTitle("Introduce tu apodo")
+        val dialogLayout = inflater.inflate(R.layout.introduce_nombre, null)
+        val editText  = dialogLayout.findViewById<EditText>(R.id.editText)
+        builder.setView(dialogLayout)
+        builder.setPositiveButton("OK") { dialogInterface, i -> miVistaModelo.getName(editText.toString()) }
+        builder.show()
+    }
+
+
 
     //OnClickListener de los botones de colores del simon dice
     override fun onClick(view: View?) {
