@@ -1,4 +1,4 @@
-package com.example.simondice.model
+package com.example.simondice.model.room
 
 import androidx.room.Dao
 import androidx.room.*

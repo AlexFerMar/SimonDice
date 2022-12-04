@@ -1,11 +1,21 @@
 package com.example.simondice.viewModel
 
 import android.app.Application
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.simondice.model.AppDatabase
+import com.example.simondice.model.firebase.Record
+import com.google.android.gms.tasks.Task
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 
 
 import kotlinx.coroutines.*
@@ -14,20 +24,28 @@ import kotlin.random.Random
 
 class MyViewModel(application: Application) : AndroidViewModel(application) {
 
-    //Contexto de la aplicacion, que nos permite crear toast y guardar el record en las SharedPreferences
+    //Contexto de la aplicacion, que nos permite crear toast y guardar el record
     private val context: Context = getApplication<Application>().applicationContext
 
+    /* Empleado en base de datos room
     //Creamos una instancia de la base de datos
     val daoRecord = AppDatabase.getDatabase(context).DAORecord()
-
-    //Ronda de la partida
-    private var ronda: Int = 0
 
     //Nombre del jugador
     private lateinit var name: String
 
+    */
+
+
+    private lateinit var dbReference: DatabaseReference
+
+
+
+    //Ronda de la partida
+    private var ronda: Int = 0
+
     //Record de rondas
-    private var record: Int = loadRecord()
+    private var record: Int = 0
 
     //Con estas variables observamos los cambios en la ronda y el record
     var liveRonda = MutableLiveData<Int>()
@@ -37,6 +55,26 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     init {
         liveRonda.value = ronda
         liveRecord.value = record
+
+        dbReference= Firebase.database("https://console.firebase.google.com/project/simon-dice-6a999/database/simon-dice-6a999-default-rtdb/data/~2F")
+            .getReference("Record")
+
+        val recordListeer = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Get Post object and use the values to update the UI
+                liveRecord.value = dataSnapshot.getValue<Int>()
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("Error conectandose a firebase", "readRecord:onCancelled", databaseError.toException())
+            }
+        }
+
+        dbReference.addValueEventListener(recordListeer)
+
+
     }
 
     //Con estas variables determinamos cuando queremos que el boton cambie de color
@@ -69,6 +107,8 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     private var counter = 0
 
 
+
+    /* Empleado en base de datos room
     //Funcion que recoje el valor del nombre del jugador
     fun getName(name: String) {
 
@@ -76,6 +116,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
 
     }
+    */
 
 
     /**
@@ -173,8 +214,6 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
         ronda = 0
 
-        liveRecord.setValue(loadRecord())
-
         cadenaColores.clear()
 
 
@@ -241,6 +280,19 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
 
     /**
+     * Funcion que guarada en la base de datos firebase
+     *
+     * record: Int -> El número que se guarda comno record
+     */
+    fun saveRecord(record: Int) {
+
+        dbReference.setValue(record)
+
+    }
+
+
+    /* Funciones usadas con base de datos Room
+    /**
      * Funcion que guarada en la base de datos local el record y el apodo de quien lo saco
      *
      * record: Int -> El número que se guarda comno record
@@ -265,5 +317,5 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         return recor
 
     }
-
+*/
 }
