@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         btStart = findViewById(R.id.btStart)
 
-        introduceNombre()
+        //introduceNombre()
 
         btStart.setOnClickListener {
 
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-
+/* Esto solo es usado con la base de datos room
     @SuppressLint("MissingInflatedId")
     fun introduceNombre() {
         val builder = AlertDialog.Builder(this)
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         builder.setPositiveButton("OK") { dialogInterface, i -> miVistaModelo.getName(editText.toString()) }
         builder.show()
     }
-
+*/
 
 
     //OnClickListener de los botones de colores del simon dice
