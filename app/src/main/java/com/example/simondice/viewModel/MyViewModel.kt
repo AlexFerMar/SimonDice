@@ -1,14 +1,11 @@
 package com.example.simondice.viewModel
 
 import android.app.Application
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.simondice.model.firebase.Record
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -56,7 +53,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         liveRonda.value = ronda
         liveRecord.value = record
 
-        dbReference= Firebase.database("https://console.firebase.google.com/project/simon-dice-6a999/database/simon-dice-6a999-default-rtdb/data/~2F")
+        dbReference= Firebase.database("https://simon-dice-6a999-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("Record")
 
         val recordListeer = object : ValueEventListener {
